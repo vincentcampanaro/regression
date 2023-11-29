@@ -21,16 +21,17 @@ function calculateRegression(data) {
     return { m, c };
 }
 
-function processData(rawData, selectedDistance, selectedStroke) {
+function processData(rawData, selectedDistance, selectedStroke, selectedGender) {
     let processedData = [];
     rawData.forEach(function(row) {
         let stroke = row['Stroke'] === 'Medley' ? 'Individual medley' : row['Stroke'];
-        if (stroke === selectedStroke && row['Distance (in meters)'] === selectedDistance && row['Gender'] === 'Men') {
+        if (stroke === selectedStroke && row['Distance (in meters)'] === selectedDistance && row['Gender'] === selectedGender) {
             let year = parseInt(row['Year']);
             let time = parseFloat(row['Results']);
+            let athlete = row['Athlete'];
 
             if (!isNaN(year) && !isNaN(time)) {
-                processedData.push({ x: year, y: time });
+                processedData.push({ x: year, y: time, label: athlete });
             }
         }
     });
@@ -40,8 +41,9 @@ function processData(rawData, selectedDistance, selectedStroke) {
 function updateChart() {
     let selectedDistance = document.getElementById('distanceSelect').value;
     let selectedStroke = document.getElementById('strokeSelect').value;
+    let selectedGender = document.getElementById('genderSelect').value;
 
-    let processedData = processData(globalData, selectedDistance, selectedStroke);
+    let processedData = processData(globalData, selectedDistance, selectedStroke, selectedGender);
     let regression = calculateRegression(processedData);
 
     let minYear = Math.min(...processedData.map(d => d.x));
@@ -59,9 +61,13 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: selectedDistance + ' ' + selectedStroke + ' Times (Men)',
+                label: 'Swim Times',
                 data: processedData,
-                backgroundColor: 'rgba(0, 123, 255, 0.5)'
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointStyle: 'circle',
+                pointLabels: { display: true, font: { size: 14 }, color: '#000' }
             }, {
                 label: 'Regression Line',
                 data: regressionLine,
@@ -79,6 +85,14 @@ function updateChart() {
                 },
                 y: {
                     beginAtZero: true
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let label = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label || '';
+                        return label + ': ' + tooltipItem.yLabel;
+                    }
                 }
             }
         }
