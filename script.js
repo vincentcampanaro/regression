@@ -36,9 +36,10 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
         if (stroke === selectedStroke && row['Distance (in meters)'] === selectedDistance && row['Gender'] === selectedGender) {
             let year = parseInt(row['Year']);
             let time = parseTime(row['Results']);
+            let athlete = row['Athlete'];
 
             if (!isNaN(year) && !isNaN(time)) {
-                processedData.push({ x: year, y: time });
+                processedData.push({ x: year, y: time, athlete: athlete });
             }
         }
     });
@@ -68,7 +69,7 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: 'Swim Times',
+                label: selectedDistance + ' ' + selectedStroke + ' Times (' + selectedGender + ')',
                 data: processedData,
                 backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
@@ -93,8 +94,8 @@ function updateChart() {
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
-                        let label = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].label || '';
-                        return label + ': ' + tooltipItem.yLabel;
+                        let athlete = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].athlete || '';
+                        return athlete + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
                     }
                 }
             }
