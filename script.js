@@ -8,18 +8,22 @@ function calculateRegression(data) {
     data.forEach(d => {
         sumX += d.x;
         sumY += d.y;
-        sumXY += (d.x * d.y);
-        sumXX += (d.x * d.x);
+        sumXY += d.x * d.y;
+        sumXX += d.x * d.x;
     });
 
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
 
+    if (!isFinite(m) || !isFinite(c)) {
+        // Handle the case where regression cannot be calculated
+        return null;
+    }
+
     return { m, c };
 }
 
 function parseTime(timeString) {
-    // Remove any non-numeric characters except for the colon and period
     timeString = timeString.replace(/[^\d:.]/g, '');
     let totalSeconds = 0;
     if (timeString.includes(':')) {
@@ -54,12 +58,17 @@ function updateChart() {
     let processedData = processData(globalData, selectedDistance, selectedStroke, selectedGender);
     let regression = calculateRegression(processedData);
 
+    if (!regression) {
+        console.error('Cannot calculate regression.');
+        return;
+    }
+
     let minYear = Math.min(...processedData.map(d => d.x));
     let maxYear = Math.max(...processedData.map(d => d.x));
-    let regressionLine = [];
-    for (let year = minYear; year <= maxYear; year++) {
-        regressionLine.push({ x: year, y: regression.m * year + regression.c });
-    }
+    let regressionLine = Array.from({ length: maxYear - minYear + 1 }, (_, i) => {
+        let year = minYear + i;
+        return { x: year, y: regression.m * year + regression.c };
+    });
 
     var ctx = document.getElementById('graph').getContext('2d');
     if (chart) {
@@ -82,7 +91,9 @@ function updateChart() {
                 type: 'line',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 2,
-                fill: false
+                fill: false,
+                showLine: true, // Ensure this is set to true to show the line
+                spanGaps: true, // Connects the line between gaps in data
             }]
         },
         options: {
@@ -95,6 +106,13 @@ function updateChart() {
                             const seconds = value % 60;
                             return `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
                         }
+                    }
+                },
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Year'
                     }
                 }
             },
