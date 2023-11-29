@@ -39,6 +39,7 @@ function parseTime(timeString) {
 }
 
 function processData(rawData, selectedDistance, selectedStroke, selectedGender) {
+    console.log("Processing data...");
     let filteredData = rawData.filter(row => {
         return row['Stroke'] === selectedStroke &&
                row['Distance (in meters)'] === selectedDistance &&
@@ -59,6 +60,7 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
 }
 
 function updateChart() {
+    console.log("Updating chart...");
     let selectedDistance = document.getElementById('distanceSelect').value;
     let selectedStroke = document.getElementById('strokeSelect').value;
     let selectedGender = document.getElementById('genderSelect').value;
@@ -146,6 +148,7 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
     download: true,
     header: true,
     complete: function(results) {
+        console.log("Data loaded, total records:", results.data.length);
         globalData = results.data;
         updateChart(); // Initialize chart with default values
     }
