@@ -16,7 +16,7 @@ function calculateRegression(data) {
     let c = (sumY - m * sumX) / n;
 
     if (!isFinite(m) || !isFinite(c)) {
-        // Handle the case where regression cannot be calculated
+        console.error('Invalid regression calculation', { m, c, data });
         return null;
     }
 
@@ -34,18 +34,26 @@ function parseTime(timeString) {
     } else {
         totalSeconds = parseFloat(timeString);
     }
+    console.log(`Parsed "${timeString}" to total seconds: ${totalSeconds}`);
     return totalSeconds;
 }
 
 function processData(rawData, selectedDistance, selectedStroke, selectedGender) {
-    return rawData.filter(row => {
+    let filteredData = rawData.filter(row => {
         return row['Stroke'] === selectedStroke &&
                row['Distance (in meters)'] === selectedDistance &&
                row['Gender'] === selectedGender;
-    }).map(row => {
+    });
+
+    console.log(`Filtered data count: ${filteredData.length}`);
+
+    return filteredData.map(row => {
         let year = parseInt(row['Year']);
         let time = parseTime(row['Results']);
         let athlete = row['Athlete'];
+        if (isNaN(year) || isNaN(time)) {
+            console.error('Invalid data point', { year, time, athlete });
+        }
         return { x: year, y: time, athlete: athlete, label: athlete };
     });
 }
