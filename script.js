@@ -12,7 +12,6 @@ function calculateRegression(data) {
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
 
-    // Log the calculated slope (m) and y-intercept (c)
     console.log('Slope (m):', m);
     console.log('Y-intercept (c):', c);
 
@@ -27,11 +26,13 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
 
         let processedData = [];
         results.data.forEach(function(row) {
-            if (row.Stroke === 'Freestyle' && row.Distance === '100' && row.Gender === 'Male') {
-                processedData.push({
-                    x: parseInt(row.Year),
-                    y: parseFloat(row.Results)
-                });
+            if (row['Stroke'] === 'Freestyle' && row['Distance (in meters)'] === '100m' && row['Gender'] === 'Men') {
+                let year = parseInt(row['Year']);
+                let time = parseFloat(row['Results']);
+
+                if (!isNaN(year) && !isNaN(time)) {
+                    processedData.push({ x: year, y: time });
+                }
             }
         });
 
