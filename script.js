@@ -15,36 +15,31 @@ function calculateRegression(data) {
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
 
-    console.log('Slope (m):', m);
-    console.log('Y-intercept (c):', c);
-
     return { m, c };
 }
 
 function parseTime(timeString) {
+    let totalSeconds = 0;
     if (timeString.includes(':')) {
-        const [minutes, seconds] = timeString.split(':').map(parseFloat);
-        return minutes * 60 + seconds;
+        const parts = timeString.split(':');
+        totalSeconds = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+    } else {
+        totalSeconds = parseFloat(timeString);
     }
-    return parseFloat(timeString);
+    return totalSeconds;
 }
 
 function processData(rawData, selectedDistance, selectedStroke, selectedGender) {
-    let processedData = [];
-    rawData.forEach(function(row) {
-        let stroke = row['Stroke'] === 'Medley' ? 'Individual medley' : row['Stroke'];
-        if (stroke === selectedStroke && row['Distance (in meters)'] === selectedDistance && row['Gender'] === selectedGender) {
-            let year = parseInt(row['Year']);
-            let time = parseTime(row['Results']);
-            let athlete = row['Athlete'];
-
-            if (!isNaN(year) && !isNaN(time)) {
-                processedData.push({ x: year, y: time, athlete: athlete });
-            }
-        }
+    return rawData.filter(row => {
+        return row['Stroke'] === selectedStroke &&
+               row['Distance (in meters)'] === selectedDistance &&
+               row['Gender'] === selectedGender;
+    }).map(row => {
+        let year = parseInt(row['Year']);
+        let time = parseTime(row['Results']);
+        let athlete = row['Athlete'];
+        return { x: year, y: time, athlete: athlete };
     });
-    console.log(processedData);
-    return processedData;
 }
 
 function updateChart() {
@@ -70,7 +65,7 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: selectedDistance + ' ' + selectedStroke + ' Times (Men)',
+                label: 'Swim Times',
                 data: processedData,
                 backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
@@ -84,12 +79,16 @@ function updateChart() {
         },
         options: {
             scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom'
-                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        // Include a minute format in the ticks
+                        callback: function(value) {
+                            const minutes = Math.floor(value / 60);
+                            const seconds = value % 60;
+                            return `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
+                        }
+                    }
                 }
             },
             tooltips: {
@@ -97,10 +96,7 @@ function updateChart() {
                     label: function(tooltipItem, data) {
                         let dataset = data.datasets[tooltipItem.datasetIndex];
                         let index = tooltipItem.index;
-                        let athlete = dataset.data[index].athlete;
-                        let xLabel = tooltipItem.xLabel;
-                        let yLabel = tooltipItem.yLabel;
-                        return `${athlete}: (Year: ${xLabel}, Time: ${yLabel})`;
+                        return `${dataset.data[index].athlete}: (Year: ${tooltipItem.xLabel}, Time: ${tooltipItem.yLabel})`;
                     }
                 }
             }
