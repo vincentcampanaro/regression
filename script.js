@@ -102,20 +102,16 @@ function updateChart() {
                     }
                 }
             },
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        let dataset = data.datasets[tooltipItem.datasetIndex];
-                        let index = tooltipItem.index;
-                        let athlete = dataset.data[index].athlete;
-                        let xLabel = tooltipItem.xLabel;
-                        let yLabel = tooltipItem.yLabel;
-                        let minutes = Math.floor(yLabel / 60);
-                        let seconds = yLabel % 60;
-                        let formattedTime = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
-                        console.log(`Converted Time: ${formattedTime}`);
-                        return `${athlete}: (Year: ${xLabel}, Time: ${formattedTime})`;
-                    }
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    let dataset = data.datasets[tooltipItem.datasetIndex];
+                    let index = tooltipItem.index;
+                    let athleteName = dataset.data[index].athlete;
+                    let xValue = tooltipItem.xLabel;
+                    let yValue = tooltipItem.yLabel;
+                    let minutes = Math.floor(yValue / 60);
+                    let seconds = (yValue - minutes * 60).toFixed(2);
+                    return athleteName + ': (Year: ' + xValue + ', Time: ' + minutes + ':' + (seconds < 10 ? '0' + seconds : seconds) + ')';
                 }
             }
         }
