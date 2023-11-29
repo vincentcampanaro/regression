@@ -70,7 +70,8 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: 'Swim Times',
+                let athlete = dataset.data[index].athlete;
+                label: athlete,
                 data: processedData,
                 backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
