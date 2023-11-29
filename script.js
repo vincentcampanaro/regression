@@ -3,14 +3,18 @@ function calculateRegression(data) {
     let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
 
     data.forEach(d => {
-        sumX += d.year;
-        sumY += d.time;
-        sumXY += (d.year * d.time);
-        sumXX += (d.year * d.year);
+        sumX += d.x;
+        sumY += d.y;
+        sumXY += (d.x * d.y);
+        sumXX += (d.x * d.x);
     });
 
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
+
+    // Log the calculated slope (m) and y-intercept (c)
+    console.log('Slope (m):', m);
+    console.log('Y-intercept (c):', c);
 
     return { m, c };
 }
@@ -29,10 +33,20 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
             }
         });
 
+        // Log the processed data
+        console.log('Processed Data:', processedData);
+
         let regression = calculateRegression(processedData);
-        let regressionLine = processedData.map(d => {
-            return { x: d.x, y: regression.m * d.x + regression.c };
-        });
+
+        let minYear = Math.min(...processedData.map(d => d.x));
+        let maxYear = Math.max(...processedData.map(d => d.x));
+        let regressionLine = [];
+        for (let year = minYear; year <= maxYear; year++) {
+            regressionLine.push({ x: year, y: regression.m * year + regression.c });
+        }
+
+        // Log the regression line data
+        console.log('Regression Line Data:', regressionLine);
 
         var ctx = document.getElementById('graph').getContext('2d');
         var chart = new Chart(ctx, {
