@@ -98,7 +98,9 @@ function updateChart() {
                         let dataset = data.datasets[tooltipItem.datasetIndex];
                         let index = tooltipItem.index;
                         let athlete = dataset.data[index].athlete;
-                        return athlete + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
+                        let xLabel = tooltipItem.xLabel;
+                        let yLabel = tooltipItem.yLabel;
+                        return `${athlete}: (Year: ${xLabel}, Time: ${yLabel})`;
                     }
                 }
             }
