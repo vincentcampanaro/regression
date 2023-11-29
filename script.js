@@ -95,9 +95,10 @@ function updateChart() {
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
-                        let athlete = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].athlete || '';
+                        let dataset = data.datasets[tooltipItem.datasetIndex];
+                        let index = tooltipItem.index;
+                        let athlete = dataset.data[index].athlete;
                         return athlete + ': (' + tooltipItem.xLabel + ', ' + tooltipItem.yLabel + ')';
-                        console.log(athlete);
                     }
                 }
             }
