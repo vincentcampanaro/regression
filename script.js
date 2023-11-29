@@ -70,8 +70,7 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                let athlete = dataset.data[index].athlete;
-                label: athlete,
+                label: selectedDistance + ' ' + selectedStroke + ' Times (Men)',
                 data: processedData,
                 backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
