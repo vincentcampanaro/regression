@@ -8,25 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Compare Your Swimming Time</h1>
-        <form id="swimmingForm">
-            <label for="gender">Gender:</label>
-            <select id="gender">
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-            </select>
-
-            <label for="timeSlider">Your Time (seconds):</label>
-            <input type="range" id="timeSlider" min="10" max="1000" value="60">
-            <span id="timeValue">1:00.00</span> seconds
-
-            <button type="submit">Compare</button>
-        </form>
+        <h1>Swimming Time Regression Analysis</h1>
         <canvas id="graph"></canvas>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
