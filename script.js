@@ -15,19 +15,21 @@ function calculateRegression(data) {
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
 
+    console.log('Slope (m):', m, 'Y-intercept (c):', c);
+
     return { m, c };
 }
 
 function parseTime(timeString) {
-    // Remove any non-numeric characters except for the colon and period
     timeString = timeString.replace(/[^\d:.]/g, '');
     let totalSeconds = 0;
     if (timeString.includes(':')) {
         const [minutes, seconds] = timeString.split(':').map(parseFloat);
-        totalSeconds = (minutes * 60) + seconds;
+        totalSeconds = minutes * 60 + seconds;
     } else {
         totalSeconds = parseFloat(timeString);
     }
+    console.log(`Parsing timeString "${timeString}" to totalSeconds ${totalSeconds}`);
     return totalSeconds;
 }
 
@@ -84,7 +86,6 @@ function updateChart() {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        // Include a minute format in the ticks
                         callback: function(value) {
                             const minutes = Math.floor(value / 60);
                             const seconds = value % 60;
@@ -100,12 +101,12 @@ function updateChart() {
                         let index = tooltipItem.index;
                         let athlete = dataset.data[index].athlete;
                         let xLabel = tooltipItem.xLabel;
-                        // Convert the yLabel into a time format
-                        let totalSeconds = tooltipItem.yLabel;
-                        let minutes = Math.floor(totalSeconds / 60);
-                        let seconds = totalSeconds % 60;
-                        let yLabel = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
-                        return `${athlete}: (Year: ${xLabel}, Time: ${yLabel})`;
+                        let yLabel = tooltipItem.yLabel;
+                        let minutes = Math.floor(yLabel / 60);
+                        let seconds = yLabel % 60;
+                        let formattedTime = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
+                        console.log(`Converted Time: ${formattedTime}`);
+                        return `${athlete}: (Year: ${xLabel}, Time: ${formattedTime})`;
                     }
                 }
             }
