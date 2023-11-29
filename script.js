@@ -23,6 +23,8 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
     download: true,
     header: true,
     complete: function(results) {
+        console.log('CSV Data:', results.data); // Log raw CSV data
+
         let processedData = [];
         results.data.forEach(function(row) {
             if (row.Stroke === 'Freestyle' && row.Distance === '100' && row.Gender === 'Male') {
@@ -33,8 +35,12 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
             }
         });
 
-        // Log the processed data
         console.log('Processed Data:', processedData);
+
+        if (processedData.length === 0) {
+            console.error('No data after processing. Check filters or CSV structure.');
+            return;
+        }
 
         let regression = calculateRegression(processedData);
 
@@ -45,7 +51,6 @@ Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/O
             regressionLine.push({ x: year, y: regression.m * year + regression.c });
         }
 
-        // Log the regression line data
         console.log('Regression Line Data:', regressionLine);
 
         var ctx = document.getElementById('graph').getContext('2d');
