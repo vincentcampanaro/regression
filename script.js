@@ -43,6 +43,7 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
             }
         }
     });
+    console.log(processedData);
     return processedData;
 }
 
