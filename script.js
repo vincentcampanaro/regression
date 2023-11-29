@@ -21,15 +21,23 @@ function calculateRegression(data) {
 }
 
 function parseTime(timeString) {
+    // Remove any non-numeric characters except for the colon and period
     timeString = timeString.replace(/[^\d:.]/g, '');
     let totalSeconds = 0;
     if (timeString.includes(':')) {
-        const [minutes, seconds] = timeString.split(':').map(parseFloat);
-        totalSeconds = minutes * 60 + seconds;
+        const parts = timeString.split(':');
+        if (parts.length === 2) {
+            const [minutes, seconds] = parts.map(parseFloat);
+            totalSeconds = (minutes * 60) + seconds;
+        } else if (parts.length === 3) {
+            const [hours, minutes, seconds] = parts.map(parseFloat);
+            totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+        }
     } else {
         totalSeconds = parseFloat(timeString);
     }
-    console.log(`Parsing timeString "${timeString}" to totalSeconds ${totalSeconds}`);
+    
+    console.log(`Parsed "${timeString}" to total seconds: ${totalSeconds}`);
     return totalSeconds;
 }
 
