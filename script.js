@@ -21,17 +21,24 @@ function calculateRegression(data) {
     return { m, c };
 }
 
+function parseTime(timeString) {
+    if (timeString.includes(':')) {
+        const [minutes, seconds] = timeString.split(':').map(parseFloat);
+        return minutes * 60 + seconds;
+    }
+    return parseFloat(timeString);
+}
+
 function processData(rawData, selectedDistance, selectedStroke, selectedGender) {
     let processedData = [];
     rawData.forEach(function(row) {
         let stroke = row['Stroke'] === 'Medley' ? 'Individual medley' : row['Stroke'];
         if (stroke === selectedStroke && row['Distance (in meters)'] === selectedDistance && row['Gender'] === selectedGender) {
             let year = parseInt(row['Year']);
-            let time = parseFloat(row['Results']);
-            let athlete = row['Athlete'];
+            let time = parseTime(row['Results']);
 
             if (!isNaN(year) && !isNaN(time)) {
-                processedData.push({ x: year, y: time, label: athlete });
+                processedData.push({ x: year, y: time });
             }
         }
     });
@@ -63,11 +70,7 @@ function updateChart() {
             datasets: [{
                 label: 'Swim Times',
                 data: processedData,
-                backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                pointRadius: 5,
-                pointHoverRadius: 7,
-                pointStyle: 'circle',
-                pointLabels: { display: true, font: { size: 14 }, color: '#000' }
+                backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
                 label: 'Regression Line',
                 data: regressionLine,
