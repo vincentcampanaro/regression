@@ -1,58 +1,67 @@
-function formatTime(seconds) {
-    let minutes = Math.floor(seconds / 60);
-    let remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+function calculateRegression(data) {
+    let n = data.length;
+    let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+
+    data.forEach(d => {
+        sumX += d.year;
+        sumY += d.time;
+        sumXY += (d.year * d.time);
+        sumXX += (d.year * d.year);
+    });
+
+    let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    let c = (sumY - m * sumX) / n;
+
+    return { m, c };
 }
 
-document.getElementById('timeSlider').addEventListener('input', function(e) {
-    document.getElementById('timeValue').textContent = formatTime(e.target.value);
-});
-
-document.getElementById('swimmingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    var gender = document.getElementById('gender').value;
-    var userTimeInSeconds = parseFloat(document.getElementById('timeSlider').value);
-
-    const swimData = {
-        'female': [25.69, 55.79, 2 * 60 + 0.89, 4 * 60 + 15.49],
-        'male': [22.79, 49.99, 1 * 60 + 49.99, 3 * 60 + 55.59]
-    };
-
-    var predictedTime = swimData[gender].reduce((a, b) => a + b, 0) / swimData[gender].length;
-
-    var ctx = document.getElementById('graph').getContext('2d');
-
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
-
-    window.myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Average Professional Time', 'Your Time'],
-        datasets: [{
-            label: 'Time in seconds',
-            data: [predictedTime, userTimeInSeconds],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        scales: {
-            y: {
-                beginAtZero: true
+Papa.parse("https://raw.githubusercontent.com/vincentcampanaro/regression/main/Olympic_Swimming_Results_1912to2020.csv", {
+    download: true,
+    header: true,
+    complete: function(results) {
+        let processedData = [];
+        results.data.forEach(function(row) {
+            if (row.Stroke === 'Freestyle' && row.Distance === '100' && row.Gender === 'Male') {
+                processedData.push({
+                    x: parseInt(row.Year),
+                    y: parseFloat(row.Results)
+                });
             }
-        }
+        });
+
+        let regression = calculateRegression(processedData);
+        let regressionLine = processedData.map(d => {
+            return { x: d.x, y: regression.m * d.x + regression.c };
+        });
+
+        var ctx = document.getElementById('graph').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: '100m Freestyle Times (Men)',
+                    data: processedData,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)'
+                }, {
+                    label: 'Regression Line',
+                    data: regressionLine,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
-});
 });
