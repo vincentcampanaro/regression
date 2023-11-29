@@ -43,4 +43,7 @@ button:hover {
 
 #graph {
     margin-top: 20px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-width: 100%;
 }
