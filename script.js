@@ -1,8 +1,18 @@
+function formatTime(seconds) {
+    let minutes = Math.floor(seconds / 60);
+    let remainingSeconds = (seconds % 60).toFixed(2);
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+}
+
+document.getElementById('timeSlider').addEventListener('input', function(e) {
+    document.getElementById('timeValue').textContent = formatTime(e.target.value);
+});
+
 document.getElementById('swimmingForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     var gender = document.getElementById('gender').value;
-    var userTime = parseFloat(document.getElementById('time').value);
+    var userTimeInSeconds = parseFloat(document.getElementById('timeSlider').value);
 
     // Example data for regression model
     const swimData = {
@@ -21,7 +31,7 @@ document.getElementById('swimmingForm').addEventListener('submit', function(e) {
             labels: ['Average Professional Time', 'Your Time'],
             datasets: [{
                 label: 'Time in seconds',
-                data: [predictedTime, userTime],
+                data: [predictedTime, userTimeInSeconds],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)'
