@@ -15,8 +15,6 @@ function calculateRegression(data) {
     let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
     let c = (sumY - m * sumX) / n;
 
-    console.log('Slope (m):', m, 'Y-intercept (c):', c);
-
     return { m, c };
 }
 
@@ -26,18 +24,12 @@ function parseTime(timeString) {
     let totalSeconds = 0;
     if (timeString.includes(':')) {
         const parts = timeString.split(':');
-        if (parts.length === 2) {
-            const [minutes, seconds] = parts.map(parseFloat);
-            totalSeconds = (minutes * 60) + seconds;
-        } else if (parts.length === 3) {
-            const [hours, minutes, seconds] = parts.map(parseFloat);
-            totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
-        }
+        totalSeconds = parts.reduce((acc, timePart, index) => {
+            return acc + parseFloat(timePart) * Math.pow(60, parts.length - index - 1);
+        }, 0);
     } else {
         totalSeconds = parseFloat(timeString);
     }
-    
-    console.log(`Parsed "${timeString}" to total seconds: ${totalSeconds}`);
     return totalSeconds;
 }
 
@@ -50,7 +42,7 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
         let year = parseInt(row['Year']);
         let time = parseTime(row['Results']);
         let athlete = row['Athlete'];
-        return { x: year, y: time, athlete: athlete };
+        return { x: year, y: time, athlete: athlete, label: athlete };
     });
 }
 
@@ -79,7 +71,11 @@ function updateChart() {
             datasets: [{
                 label: 'Swim Times',
                 data: processedData,
-                backgroundColor: 'rgba(0, 123, 255, 0.5)'
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                parsing: {
+                    yAxisKey: 'y',
+                    labelKey: 'label'
+                }
             }, {
                 label: 'Regression Line',
                 data: regressionLine,
@@ -102,16 +98,18 @@ function updateChart() {
                     }
                 }
             },
-            callbacks: {
-                label: function(tooltipItem, data) {
-                    let dataset = data.datasets[tooltipItem.datasetIndex];
-                    let index = tooltipItem.index;
-                    let athleteName = dataset.data[index].athlete;
-                    let xValue = tooltipItem.xLabel;
-                    let yValue = tooltipItem.yLabel;
-                    let minutes = Math.floor(yValue / 60);
-                    let seconds = (yValue - minutes * 60).toFixed(2);
-                    return athleteName + ': (Year: ' + xValue + ', Time: ' + minutes + ':' + (seconds < 10 ? '0' + seconds : seconds) + ')';
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let athleteName = context.raw.label;
+                            let xValue = context.parsed.x;
+                            let yValue = context.parsed.y;
+                            let minutes = Math.floor(yValue / 60);
+                            let seconds = (yValue % 60).toFixed(2);
+                            return `${athleteName}: (Year: ${xValue}, Time: ${minutes}:${seconds < 10 ? '0' + seconds : seconds})`;
+                        }
+                    }
                 }
             }
         }
