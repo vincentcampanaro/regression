@@ -19,10 +19,12 @@ function calculateRegression(data) {
 }
 
 function parseTime(timeString) {
+    // Remove any non-numeric characters except for the colon and period
+    timeString = timeString.replace(/[^\d:.]/g, '');
     let totalSeconds = 0;
     if (timeString.includes(':')) {
-        const parts = timeString.split(':');
-        totalSeconds = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+        const [minutes, seconds] = timeString.split(':').map(parseFloat);
+        totalSeconds = (minutes * 60) + seconds;
     } else {
         totalSeconds = parseFloat(timeString);
     }
@@ -96,7 +98,14 @@ function updateChart() {
                     label: function(tooltipItem, data) {
                         let dataset = data.datasets[tooltipItem.datasetIndex];
                         let index = tooltipItem.index;
-                        return `${dataset.data[index].athlete}: (Year: ${tooltipItem.xLabel}, Time: ${tooltipItem.yLabel})`;
+                        let athlete = dataset.data[index].athlete;
+                        let xLabel = tooltipItem.xLabel;
+                        // Convert the yLabel into a time format
+                        let totalSeconds = tooltipItem.yLabel;
+                        let minutes = Math.floor(totalSeconds / 60);
+                        let seconds = totalSeconds % 60;
+                        let yLabel = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
+                        return `${athlete}: (Year: ${xLabel}, Time: ${yLabel})`;
                     }
                 }
             }
