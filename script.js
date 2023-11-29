@@ -54,9 +54,10 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
         let athlete = row['Athlete'];
         if (isNaN(year) || isNaN(time)) {
             console.error('Invalid data point', { year, time, athlete });
+            return null; // Return null for invalid data points
         }
         return { x: year, y: time, athlete: athlete, label: athlete };
-    });
+    }).filter(d => d !== null); // Remove null entries from the dataset
 }
 
 function updateChart() {
