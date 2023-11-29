@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swimming Time Comparison</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Compare Your Swimming Time</h1>
+        <form id="swimmingForm">
+            <label for="gender">Gender:</label>
+            <select id="gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+            </select>
+
+            <label for="event">Event:</label>
+            <select id="event">
+                <!-- Populate with events -->
+            </select>
+
+            <label for="time">Your Time (mm:ss.ms):</label>
+            <input type="text" id="time" placeholder="00:00.00">
+
+            <button type="submit">Compare</button>
+        </form>
+        <div id="graph"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
