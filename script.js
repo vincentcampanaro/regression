@@ -69,7 +69,7 @@ function updateChart() {
         type: 'scatter',
         data: {
             datasets: [{
-                label: selectedDistance + ' ' + selectedStroke + ' Times (' + selectedGender + ')',
+                label: 'Swim Times',
                 data: processedData,
                 backgroundColor: 'rgba(0, 123, 255, 0.5)'
             }, {
