@@ -37,12 +37,10 @@
             <option value="Individual medley">Individual medley/Medley</option>
         </select>
 
-        <div class="label-and-button">
-            <label for="timeInput">Enter Your Time:</label>
-            <button class="small-calc-time-btn" onclick="window.open('https://calculator.themagic5.vincentcampanaro.com', '_blank')">Calculate</button>
-        </div>
+        <label for="timeInput">Enter Your Time:</label>
+        <button class="small-calc-time-btn" onclick="window.open('https://calculator.themagic5.vincentcampanaro.com', '_blank')">Calculate Your Time</button>
         <input type="text" id="timeInput" placeholder="e.g., 2:05.30">
-
+        
         <button onclick="updateChart()">Update Chart</button>
         
         <canvas id="graph"></canvas>
