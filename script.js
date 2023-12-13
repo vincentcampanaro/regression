@@ -1,5 +1,6 @@
 let globalData = null;
 let chart = null;
+let userTimeData = null;
 
 function calculateRegression(data) {
     let n = data.length;
@@ -69,12 +70,10 @@ function addUserTime() {
     }
 
     let currentYear = new Date().getFullYear();
-    let userTimeData = { x: currentYear, y: parsedTime, athlete: "You", label: "Your Time" };
-
-    updateChart(userTimeData);
+    userTimeData = { x: currentYear, y: parsedTime, athlete: "You", label: "Your Time" };
 }
 
-function updateChart(userTimeData = null) {
+function updateChart() {
     console.log("Updating chart...");
     let selectedDistance = document.getElementById('distanceSelect').value;
     let selectedStroke = document.getElementById('strokeSelect').value;
@@ -124,7 +123,7 @@ function updateChart(userTimeData = null) {
         datasets.push({
             label: 'Your Time',
             data: [userTimeData],
-            backgroundColor: 'rgba(50, 205, 50, 0.7)', // Different color for the user's data point
+            backgroundColor: 'rgba(50, 205, 50, 0.7)',
         });
     }
 
