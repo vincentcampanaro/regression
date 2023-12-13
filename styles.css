@@ -11,11 +11,37 @@ body {
     overflow: hidden;
 }
 
+.time-label-button {
+    display: inline-block;
+}
+
+label {
+    display: inline;
+    margin-right: 5px;
+}
+
+.small-calc-time-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+    width: 100px;
+    display: inline;
+}
+
+.small-calc-time-btn:hover {
+    background-color: #0056b3;
+}
+
 input[type="text"], select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
-    display: inline-block;
+    display: block;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -29,33 +55,11 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100%;
+    display: block;
 }
 
 button:hover {
     background-color: #45a049;
-}
-
-.small-calc-time-btn {
-    background-color: #007bff; /* Example blue color */
-    color: white;
-    padding: 2px 5px; /* Reduced padding */
-    font-size: 0.8rem; /* Smaller font size */
-    margin-left: 5px; /* Small gap between label and button */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    vertical-align: middle; /* Align with the text */
-    display: inline-block; /* Inline display */
-}
-
-.small-calc-time-btn:hover {
-    background-color: #0056b3; /* Darker shade for hover effect */
-}
-
-label {
-    display: inline-block; /* Inline display for label */
-    margin-right: 5px; /* Small gap between label and button */
 }
 
 #graph {
