@@ -11,6 +11,30 @@ body {
     overflow: hidden;
 }
 
+.time-input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+.calculate-time-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calculate-time-btn:hover {
+    background-color: #0056b3;
+}
+
 form {
     margin-top: 20px;
     margin-bottom: 20px;
