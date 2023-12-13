@@ -11,13 +11,30 @@ body {
     overflow: hidden;
 }
 
-.time-label-button {
-    display: inline-block;
+input[type="text"], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
-label {
-    display: inline;
-    margin-right: 5px;
+.update-chart-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.update-chart-btn:hover {
+    background-color: #45a049;
 }
 
 .small-calc-time-btn {
@@ -37,29 +54,13 @@ label {
     background-color: #0056b3;
 }
 
-input[type="text"], select {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+.time-label-button {
+    display: inline-block;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: block;
-}
-
-button:hover {
-    background-color: #45a049;
+label {
+    display: inline;
+    margin-right: 5px;
 }
 
 #graph {
