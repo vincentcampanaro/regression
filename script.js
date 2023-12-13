@@ -97,12 +97,13 @@ function updateChart() {
         return;
     }
 
-    let minYear = Math.min(...processedData.map(d => d.x));
-    let maxYear = Math.max(...processedData.map(d => d.x));
-    let regressionLine = Array.from({ length: maxYear - minYear + 1 }, (_, i) => {
-        let year = minYear + i;
-        return { x: year, y: regression.m * year + regression.c };
-    });
+    let startYear = 1960;
+    let endYear = 2030;
+
+    let startPoint = { x: startYear, y: regression.m * startYear + regression.c };
+    let endPoint = { x: endYear, y: regression.m * endYear + regression.c };
+
+    let regressionLine = [startPoint, endPoint];
 
     var ctx = document.getElementById('graph').getContext('2d');
     if (chart) {
@@ -161,7 +162,9 @@ function updateChart() {
                     title: {
                         display: true,
                         text: 'Year'
-                    }
+                    },
+                    min: 1960,
+                    max: 2030
                 }
             },
             plugins: {
