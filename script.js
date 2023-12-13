@@ -60,7 +60,21 @@ function processData(rawData, selectedDistance, selectedStroke, selectedGender) 
     }).filter(d => d !== null); // Remove null entries from the dataset
 }
 
-function updateChart() {
+function addUserTime() {
+    let timeInput = document.getElementById('timeInput').value;
+    let parsedTime = parseTime(timeInput);
+    if (isNaN(parsedTime)) {
+        alert("Invalid time format. Please enter time as min:sec, e.g., 2:05.30");
+        return;
+    }
+
+    let currentYear = new Date().getFullYear();
+    let userTimeData = { x: currentYear, y: parsedTime, athlete: "You", label: "Your Time" };
+
+    updateChart(userTimeData);
+}
+
+function updateChart(userTimeData = null) {
     console.log("Updating chart...");
     let selectedDistance = document.getElementById('distanceSelect').value;
     let selectedStroke = document.getElementById('strokeSelect').value;
@@ -85,28 +99,38 @@ function updateChart() {
     if (chart) {
         chart.destroy();
     }
+
+    let datasets = [{
+        label: 'Swim Times',
+        data: processedData,
+        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+        parsing: {
+            yAxisKey: 'y',
+            labelKey: 'label'
+        }
+    }, {
+        label: 'Regression Line',
+        data: regressionLine,
+        type: 'line',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 2,
+        fill: false,
+        showLine: true,
+        spanGaps: true,
+    }];
+
+    // If user's time is provided, add it to the datasets
+    if (userTimeData) {
+        datasets.push({
+            label: 'Your Time',
+            data: [userTimeData],
+            backgroundColor: 'rgba(50, 205, 50, 0.7)', // Different color for the user's data point
+        });
+    }
+
     chart = new Chart(ctx, {
         type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Swim Times',
-                data: processedData,
-                backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                parsing: {
-                    yAxisKey: 'y',
-                    labelKey: 'label'
-                }
-            }, {
-                label: 'Regression Line',
-                data: regressionLine,
-                type: 'line',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                fill: false,
-                showLine: true, // Ensure this is set to true to show the line
-                spanGaps: true, // Connects the line between gaps in data
-            }]
-        },
+        data: { datasets: datasets },
         options: {
             scales: {
                 y: {
