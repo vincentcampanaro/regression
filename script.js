@@ -79,6 +79,16 @@ function updateChart() {
     let selectedStroke = document.getElementById('strokeSelect').value;
     let selectedGender = document.getElementById('genderSelect').value;
 
+    // Process user's time
+    let timeInput = document.getElementById('timeInput').value;
+    let parsedTime = parseTime(timeInput);
+    if (!isNaN(parsedTime)) {
+        let currentYear = new Date().getFullYear();
+        userTimeData = { x: currentYear, y: parsedTime, athlete: "You", label: "Your Time" };
+    } else {
+        userTimeData = null;
+    }
+
     let processedData = processData(globalData, selectedDistance, selectedStroke, selectedGender);
     let regression = calculateRegression(processedData);
 
@@ -118,12 +128,16 @@ function updateChart() {
         spanGaps: true,
     }];
 
-    // If user's time is provided, add it to the datasets
     if (userTimeData) {
         datasets.push({
             label: 'Your Time',
             data: [userTimeData],
             backgroundColor: 'rgba(50, 205, 50, 0.7)',
+            pointRadius: 6,
+            parsing: {
+                yAxisKey: 'y',
+                labelKey: 'label'
+            }
         });
     }
 
